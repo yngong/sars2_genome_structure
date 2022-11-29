@@ -6,13 +6,8 @@ output: html_notebook
 ### import packages
 ```{r}
 library(ggplot2)
-library(reshape)
-library(grid)
 library(gridExtra)
 library(gggenes)
-library(cowplot)
-library(magick)
-library(pdftools)
 ```
 
 ### here is a template theme.
@@ -31,10 +26,9 @@ theme_tem <- function(){
     )}
 ```
 
-
 ### plot individual subfigures
 ```{r}
-### Figure1A
+### Figure 1
 genome.data <- read.csv("./genome.raw", sep ="\t", header=TRUE)
 Figure1A <- ggplot(genome.data, aes(xmin = start, xmax = end, y = ID, fill = Protein)) +
   geom_gene_arrow() +
