@@ -6,16 +6,11 @@ Generate SARS-CoV-2 genome structure
 
 ```
 library(ggplot2)
-library(reshape)
-library(grid)
 library(gridExtra)
 library(gggenes)
-library(cowplot)
-library(magick)
-library(pdftools)
 ```
 
-### Please cite this book if using this repo.
+### Please cite this book and above packages if using this repo.
 
 * Title: Evolution and Epidemiology of SARS-CoV-2 Virus
 * Authors: Yu-Nong Gong, Kuo-Ming Lee & Shin-Ru Shih 
