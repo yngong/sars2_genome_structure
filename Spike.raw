@@ -1,0 +1,5 @@
+ID	Domain	start	end	strand	direction
+Spike	Spike=21563..25384	21563	25384	forward	1
+Spike	S1=21599..23617	21599	23617	forward	1
+Spike	S2=23618..25381	23618	25381	forward	1
+Spike	RBD=22517..23185	22517	23185	forward	1

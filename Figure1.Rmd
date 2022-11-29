@@ -1,0 +1,112 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+### import packages
+```{r}
+library(ggplot2)
+library(reshape)
+library(grid)
+library(gridExtra)
+library(gggenes)
+library(cowplot)
+library(magick)
+library(pdftools)
+```
+
+### here is a template theme.
+```{r}
+theme_tem <- function(){
+  theme(
+    plot.title = element_text(size=20, face="bold", hjust=0.1),
+    axis.text.y=element_blank(),
+    axis.text.x = element_text(size=14),
+    axis.title.x = element_text(size=14),
+    axis.title.y = element_text(size=14),
+    legend.title = element_text(size=14),
+    legend.text = element_text(size=14),
+    legend.position="bottom",
+    axis.line.x = element_line(colour = "black", size = 0.6, linetype = "solid")
+    )}
+```
+
+
+### plot individual subfigures
+```{r}
+### Figure1A
+genome.data <- read.csv("./genome.raw", sep ="\t", header=TRUE)
+Figure1A <- ggplot(genome.data, aes(xmin = start, xmax = end, y = ID, fill = Protein)) +
+  geom_gene_arrow() +
+  facet_wrap(~ ID, scales = "free", ncol = 1)+
+  scale_fill_manual(values=c("ORF1a=266..13468"="#8DD3C7","ORF1b=13442..21555"="#8DD3C7",
+      "S=21563..25384"="#BEBADA","E=26245..26472"="#BEBADA",
+      "N=28274..29533"="#BEBADA","M=26523..27191"="#BEBADA",
+      "ORF3a=25393..26220"="#FB8072","ORF6=27202..27387"="#FB8072","ORF7a=27394..27759"="#FB8072",
+      "ORF7b=27756..27887"="#FB8072","ORF8=27894..28259"="#FB8072","ORF10=29558..29674"="#FB8072"),
+  breaks=c("ORF1a"="ORF1a=266..13468","ORF1b"="ORF1b=13442..21555",
+      "S"="S=21563..25384","E"="E=26245..26472",
+      "M"="M=26523..27191","N"="N=28274..29533",
+      "ORF3a"="ORF3a=25393..26220","ORF6"="ORF6=27202..27387","ORF7a"="ORF7a=27394..27759",
+      "ORF7b"="ORF7b=27756..27887","ORF8"="ORF8=27894..28259","ORF10"="ORF10=29558..29674"))+
+  theme_genes()+
+  ggtitle(label="a. SARS-CoV-2")+
+  ylab("")+
+  theme_tem()+
+  guides(fill=guide_legend(nrow=3,byrow=TRUE))
+
+Figure1A
+ggsave(file="Figure1A.pdf", height=2.5, width=13.33, units=c("in"), dpi=1200, Figure1A)
+
+
+### Figure1B
+genome.data <- read.csv("./ORF1ab.raw", sep ="\t", header=TRUE)
+Figure1B <- ggplot(genome.data, aes(xmin = start, xmax = end, y = ID, fill = nsp)) +
+  geom_gene_arrow() +
+  facet_wrap(~ ID, scales = "free", ncol = 1)+
+  scale_fill_manual(values=c(
+    "nsp1=266..805"="#000004FF","nsp2=806..2719"="#0C0826FF","nsp3=2720..8554"="#240C4FFF",
+    "nsp4=8555..10054"="#420A68FF","nsp5=10055..10972"="#5D126EFF","nsp6=10973..11842"="#781C6DFF",
+    "nsp7=11843..12091"="#932667FF","nsp8=12092..12685"="#AE305CFF",
+    "nsp9=12686..13024"="#C73E4CFF","nsp10=13025..13441"="#DD513AFF",
+    "nsp11=13442..13480"="#ED6925FF","nsp12=13442..16236"="#F8850FFF",
+    "nsp13=16237..18039"="#FCA50AFF","nsp14=18040..19620"="#FAC62DFF",
+    "nsp15=19621..20658"="#F2E661FF","nsp16=20659..21552"="#FCFFA4FF"),
+  breaks=c("nsp1=266..805","nsp2=806..2719","nsp3=2720..8554",
+    "nsp4=8555..10054","nsp5=10055..10972","nsp6=10973..11842",
+    "nsp7=11843..12091","nsp8=12092..12685","nsp9=12686..13024","nsp10=13025..13441",
+    "nsp11=13442..13480","nsp12=13442..16236","nsp13=16237..18039","nsp14=18040..19620",
+    "nsp15=19621..20658","nsp16=20659..21552"))+
+  theme_genes()+
+  ggtitle(label="b. ORF1ab")+
+  ylab("")+
+  theme_tem()+
+  guides(fill=guide_legend(nrow=4,byrow=TRUE))
+
+Figure1B
+ggsave(file="Figure1B.pdf", height=4, width=13.33, units=c("in"), dpi=1200, Figure1B)
+
+### Figure1C
+genome.data <- read.csv("./Spike.raw", sep ="\t", header=TRUE)
+Figure1C <- ggplot(genome.data, aes(xmin = start, xmax = end, y = ID, fill = Domain)) +
+  geom_gene_arrow() +
+  facet_wrap(~ ID, scales = "free", ncol = 1)+
+  scale_fill_manual(values=c("Spike=21563..25384"="#FFFFFF","S1=21599..23617"="#9EB0FFFF",
+                           "S2=23618..25381"="#194155FF","RBD=22517..23185"="#FFACACFF"),
+  breaks=c("Spike=21563..25384", "S1=21599..23617","S2=23618..25381","RBD=22517..23185"))+
+  theme_genes()+
+  ggtitle(label="c. Spike")+
+  ylab("")+
+  theme_tem()+
+  guides(fill=guide_legend(nrow=1,byrow=TRUE))
+
+Figure1C
+ggsave(file="Figure1C.pdf", height=2, width=13.33, units=c("in"), dpi=1200, Figure1C)
+```
+
+### combine three sub-figures
+```{r}
+pdf("Figure1.pdf", width = 13.33, height = 8) # Open a new pdf file
+grid.arrange(Figure1A, Figure1B, Figure1C, nrow=3, heights = c(0.3125, 0.45, 0.2375))
+dev.off()
+```
